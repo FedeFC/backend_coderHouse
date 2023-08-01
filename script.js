@@ -1,6 +1,7 @@
 class ProductMaganer {
-    constructor(){
+    constructor(path){
         this.products = []
+        this.path = path
     }
 
 
