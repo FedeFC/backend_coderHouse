@@ -1,73 +1,134 @@
-class ProductMaganer {
-    constructor(path){
-        this.products = []
-        this.path = path
-    }
+import fs from 'fs';
 
+class ProductManager {
+	constructor(path) {
+		this.products = [];
+		this.path = path;
+	}
 
-    addProduct(product){
-        //Chequeo si existe el codigo
-        if(this.products.find(prod => prod.code == product.code)){
-            return "El codigo del producto ya existe"
-        }
+	addProduct(product) {
+		this.readFile();
+		const { title, description, price, thumbnail, code, stock } = product;
 
-        if(product.code != "" || product.stock >= 0 ){
-            this.products.push(product)
-        
-        }else{
-            return "El producto no puede ser cargado"
-        }
-     
-    }
-    
-    getProduct(){
-        // this.readFile()
-        return this.products;
-    }
-    
-    getProductById (id){
-        // let product = this.products.find(prod => prod.id == id)
-        return this.products.find(prod => prod.id == id) ?? console.log("Producto no encontrado")
-      
-        // if(product){
-        //     return product
-        // }else{
-        //     console.log("Producto no encontrado")
-        // }
-    }
+		if (!title || !description || !price || !thumbnail || !code || !stock) {
+			console.log(
+				'Error. Faltan datos del producto'
+			);
+			return;
+		}
+
+		this.products.find(element => element.code == product.code)
+			? console.log('El código del producto ya existe')
+			: this.products.push(product);
+
+		let writeProducts = JSON.stringify(this.products);
+		fs.writeFileSync(this.path, writeProducts);
+	}
+
+	getProducts() {
+		this.readFile();
+		return this.products;
+	}
+
+	getProductById(id) {
+		this.readFile();
+		return this.products.find(product => product.id == id) ?? console.log('Not Found');
+	}
+
+	updateProducts(id, update) {
+		this.readFile();
+		let product = this.products.find(prod => prod.id == id);
+		let keys = Object.keys(update);
+		keys.map(key => key !== 'id' && (product[key] = update[key]));
+		let writeProducts = JSON.stringify(this.products);
+		fs.writeFileSync(this.path, writeProducts);
+	}
+
+	deleteProduct(id) {
+		this.readFile();
+		this.products = this.products.filter(prod => prod.id !== id);
+		let writeProducts = JSON.stringify(this.products);
+		fs.writeFileSync(this.path, writeProducts);
+	}
+
+	readFile() {
+		let resultado = fs.readFileSync(this.path, 'utf-8');
+		this.products = JSON.parse(resultado);
+	}
 }
 
-class Product{
-    constructor(title, description, price, thumbnail, code, stock){
-        this.title = title
-        this.description = description
-        this.price = price
-        this.thumbnail = thumbnail
-        this.code = code
-        this.stock = stock 
-        this.id = Product.incrementarID()
-    }
+class Product {
+	constructor({ title, description, price, thumbnail, code, stock }) {
+		this.title = title;
+		this.description = description;
+		this.price = price;
+		this.thumbnail = thumbnail;
+		this.code = code;
+		this.stock = stock;
+		this.id = Product.incrementarID();
+	}
 
-    static incrementarID(){
-        this.idIncremento ? this.idIncremento++ : (this.idIncremento = 1);
-
-        // if(this.idIncremento){
-        //     this.idIncremento++
-        // }else{
-        //     this.idIncremento = 1
-        // }
-        return this.idIncremento
-    }
-
+	static incrementarID() {
+		this.idIncrement ? this.idIncrement++ : (this.idIncrement = 1);
+		return this.idIncrement;
+	}
 }
 
-const Product1 = new Product("Medias","Rico",1000,"","123",20)
-const Product2 = new Product("Gorras","Rico",1000,"","456",20)
+const Pman = new ProductManager('products.txt');
 
+Pman.addProduct(
+	new Product({
+		title: 'Pantalón',
+		description: 'Un producto',
+		price: 500,
+		thumbnail: 'http://',
+		code: 154,
+		stock: 43,
+	})
+);
+Pman.addProduct(
+	new Product({
+		title: 'Pantalón',
+		description: 'Un producto',
+		price: 500,
+		thumbnail: 'http://',
+		code: 124,
+		stock: 43,
+	})
+);
 
-const productMaganer = new ProductMaganer();
-productMaganer.addProduct(Product1)
-productMaganer.addProduct(Product2)
+Pman.addProduct(
+	new Product({
+		title: 'Pantalón',
+		description: 'Un producto',
+		price: 500,
+		thumbnail: 'http://',
+		code: 453,
+		stock: 43,
+	})
+);
 
-console.log(productMaganer.getProduct())
-console.log(productMaganer.getProductById(2))
+// Añadir producto con mismo codigo
+Pman.addProduct(
+	new Product({
+		title: 'Pantalón',
+		description: 'Un producto',
+		price: 500,
+		thumbnail: 'http://',
+		code: 124,
+		stock: 43,
+	})
+);
+
+// mostrar productos
+let products = Pman.getProducts();
+console.log('Todos los productos: ', products);
+// mostrar por ID
+console.log('Producto id 2: ', Pman.getProductById(2));
+// eliminar un producto
+Pman.deleteProduct(6);
+// actualizar un producto
+Pman.updateProducts(2, { title: 'Remera', stock: 12, id: 3 });
+// mostrar productos
+products = Pman.getProducts();
+console.log('Todos los productos: ', products);
