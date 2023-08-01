@@ -1,4 +1,5 @@
-import fs from 'fs';
+// import fs from 'fs';
+import { promises as fs } from 'fs';
 
 class ProductManager {
 	constructor(path) {
@@ -10,9 +11,9 @@ class ProductManager {
 		this.readFile();
 		const { title, description, price, thumbnail, code, stock } = product;
 
-		if (!title || !description || !price || !thumbnail || !code || !stock) {
+		if (!title || !code ) {
 			console.log(
-				'Error. Faltan datos del producto'
+				'El producto debe incluir los campos title, description, price, thumbnail, code y stock'
 			);
 			return;
 		}
@@ -22,7 +23,11 @@ class ProductManager {
 			: this.products.push(product);
 
 		let writeProducts = JSON.stringify(this.products);
-		fs.writeFileSync(this.path, writeProducts);
+
+        const writext = async () =>{
+            await fs.writeFile(this.path, writeProducts)
+        }
+		writext()
 	}
 
 	getProducts() {
@@ -41,19 +46,29 @@ class ProductManager {
 		let keys = Object.keys(update);
 		keys.map(key => key !== 'id' && (product[key] = update[key]));
 		let writeProducts = JSON.stringify(this.products);
-		fs.writeFileSync(this.path, writeProducts);
+        const escribirtxt = async () =>{
+
+            fs.writeFile(this.path, writeProducts);
+        }
+        escribirtxt()
 	}
 
 	deleteProduct(id) {
 		this.readFile();
 		this.products = this.products.filter(prod => prod.id !== id);
 		let writeProducts = JSON.stringify(this.products);
-		fs.writeFileSync(this.path, writeProducts);
+        const escribirNuev = async () =>{
+
+            fs.writeFile(this.path, writeProducts);
+        }
+        escribirNuev()
 	}
 
 	readFile() {
-		let resultado = fs.readFileSync(this.path, 'utf-8');
-		this.products = JSON.parse(resultado);
+		const resultado = async () => {
+         await fs.readFile(this.path, 'utf-8');
+         this.products = JSON.parse(resultado);
+        }    
 	}
 }
 
@@ -74,9 +89,11 @@ class Product {
 	}
 }
 
-const Pman = new ProductManager('products.txt');
+// Crear el manager
+const manager = new ProductManager('products.txt');
 
-Pman.addProduct(
+// Añadir productos
+manager.addProduct(
 	new Product({
 		title: 'Pantalón',
 		description: 'Un producto',
@@ -86,7 +103,7 @@ Pman.addProduct(
 		stock: 43,
 	})
 );
-Pman.addProduct(
+manager.addProduct(
 	new Product({
 		title: 'Pantalón',
 		description: 'Un producto',
@@ -97,7 +114,7 @@ Pman.addProduct(
 	})
 );
 
-Pman.addProduct(
+manager.addProduct(
 	new Product({
 		title: 'Pantalón',
 		description: 'Un producto',
@@ -109,7 +126,7 @@ Pman.addProduct(
 );
 
 // Añadir producto con mismo codigo
-Pman.addProduct(
+manager.addProduct(
 	new Product({
 		title: 'Pantalón',
 		description: 'Un producto',
@@ -120,15 +137,10 @@ Pman.addProduct(
 	})
 );
 
-// mostrar productos
-let products = Pman.getProducts();
+let products = manager.getProducts();
 console.log('Todos los productos: ', products);
-// mostrar por ID
-console.log('Producto id 2: ', Pman.getProductById(2));
-// eliminar un producto
-Pman.deleteProduct(6);
-// actualizar un producto
-Pman.updateProducts(2, { title: 'Remera', stock: 12, id: 3 });
-// mostrar productos
-products = Pman.getProducts();
+console.log('Producto id 2: ', manager.getProductById(2));
+manager.deleteProduct(6);
+manager.updateProducts(2, { title: 'Remera', stock: 12, id: 3 });
+products = manager.getProducts();
 console.log('Todos los productos: ', products);
