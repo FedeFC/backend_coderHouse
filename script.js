@@ -11,10 +11,8 @@ class ProductManager {
 		this.readFile();
 		const { title, description, price, thumbnail, code, stock } = product;
 
-		if (!title || !code ) {
-			console.log(
-				'El producto debe incluir los campos title, description, price, thumbnail, code y stock'
-			);
+		if (!title || !code ||!description || !price || !thumbnail || !code || !stock) {
+			console.log('Faltan datos del producto');
 			return;
 		}
 
@@ -89,58 +87,51 @@ class Product {
 	}
 }
 
-// Crear el manager
-const manager = new ProductManager('products.txt');
+const cargaBD = new ProductManager('products.txt');
 
-// Añadir productos
-manager.addProduct(
-	new Product({
-		title: 'Pantalón',
+cargaBD.addProduct ( new Product ({
+		title: 'Remeras',
 		description: 'Un producto',
-		price: 500,
+		price: 1500,
 		thumbnail: 'http://',
-		code: 154,
+		code: 1548,
 		stock: 43,
 	})
 );
-manager.addProduct(
-	new Product({
-		title: 'Pantalón',
+cargaBD.addProduct ( new Product ({
+		title: 'Remeras',
 		description: 'Un producto',
-		price: 500,
+		price: 2500,
 		thumbnail: 'http://',
-		code: 124,
-		stock: 43,
+		code: 1244,
+		stock: 3,
 	})
 );
 
-manager.addProduct(
-	new Product({
-		title: 'Pantalón',
+cargaBD.addProduct ( new Product ({
+		title: 'Remeras',
 		description: 'Un producto',
-		price: 500,
+		price: 3500,
 		thumbnail: 'http://',
-		code: 453,
-		stock: 43,
+		code: 4531,
+		stock: 5,
 	})
 );
 
-// Añadir producto con mismo codigo
-manager.addProduct(
-	new Product({
-		title: 'Pantalón',
+cargaBD.addProduct ( new Product ({
+		title: 'Remeras',
 		description: 'Un producto',
 		price: 500,
 		thumbnail: 'http://',
 		code: 124,
-		stock: 43,
+		stock: 44,
 	})
 );
-
-let products = manager.getProducts();
-console.log('Todos los productos: ', products);
-console.log('Producto id 2: ', manager.getProductById(2));
-manager.deleteProduct(6);
-manager.updateProducts(2, { title: 'Remera', stock: 12, id: 3 });
-products = manager.getProducts();
-console.log('Todos los productos: ', products);
+//Ejecuciones
+// let products = cargaBD.getProducts();
+// console.log('Todos los productos: ', products);
+// console.log('Producto id 2: ', cargaBD.getProductById(2));
+// cargaBD.deleteProduct(6);
+// cargaBD.updateProducts(2, { title: 'Pantalon', stock: 12, id: 3 });
+// products = cargaBD.getProducts();
+// console.log('Todos los productos: ', products);
