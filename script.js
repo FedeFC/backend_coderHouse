@@ -1,3 +1,4 @@
+/*
 // import fs from 'fs';
 import { promises as fs } from 'fs';
 
@@ -135,3 +136,5 @@ cargaBD.addProduct ( new Product ({
 // cargaBD.updateProducts(2, { title: 'Pantalon', stock: 12, id: 3 });
 // products = cargaBD.getProducts();
 // console.log('Todos los productos: ', products);
+
+*/
